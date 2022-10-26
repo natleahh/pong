@@ -28,11 +28,10 @@ class Game:
                 if self.ball.rect.colliderect(player.rect):
                     self.ball.bounce(player.v)
 
-            self.all_sprites.update()
-
+            dt = self.clock.tick() / 1000
+            self.all_sprites.update(dt)
             self.screen.fill("black")
             self.all_sprites.draw(self.screen)
-            self.clock.tick(60)
             pygame.display.update()
 
     def setup(self):
