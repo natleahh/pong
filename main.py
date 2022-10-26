@@ -2,7 +2,7 @@ import sys
 
 import pygame
 
-from mobile import Paddle, Ball
+from round import Round
 from settings import *
 
 
@@ -11,40 +11,53 @@ class Game:
         pygame.init()
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
-        self.running = True
+        self.round = Round()
+        self.line = pygame.Surface((10, 50))
+        self.line.fill("white")
 
-        self.all_sprites = pygame.sprite.Group()
-
-        self.setup()
+        # Score Board
+        self.font = pygame.font.Font("font/PixeloidSans.ttf", 30)
+        self.winner = None
 
     def run(self):
-        while self.running:
+        while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
 
-            for player in self.players:
-                if self.ball.rect.colliderect(player.rect):
-                    self.ball.bounce(player.v)
-
             dt = self.clock.tick() / 1000
-            self.all_sprites.update(dt)
+
+            # Court
             self.screen.fill("black")
-            self.all_sprites.draw(self.screen)
+            for i in range(10):
+                self.screen.blit(
+                    self.line,
+                    (SCREEN_WIDTH // 2 - 5, SCREEN_HEIGHT // 10 * i + 5)
+                )
+            self.screen.blit(
+                self.font.render(f"{Round.SCORE[1]}", False, "white"),
+                (SCREEN_WIDTH / 2 - 80, 50)
+            )
+            self.screen.blit(
+                self.font.render(f"{Round.SCORE[2]}", False, "white"),
+                (SCREEN_WIDTH / 2 + 50, 50)
+            )
+
+            # Round
+            if self.round.active:
+                self.winner = self.round.run(dt)
+            else:
+                self.pause_display(dt)
+                if any(pygame.key.get_pressed()):
+                    del self.round
+                    self.round = Round()
+
             pygame.display.update()
 
-    def setup(self):
-        self.players = pygame.sprite.Group()
-        self.player1 = Paddle(PADDLE_WIDTH * 2, 1, self.players)
-        self.player2 = Paddle(SCREEN_WIDTH - PADDLE_WIDTH * 2, 2, self.players)
-        self.all_sprites.add(self.players)
-
-        self.ball = Ball(self.all_sprites)
-
-    def reset(self):
-        self.ball.kill()
-        self.ball = Ball(self.all_sprites)
+    def pause_display(self, dt):
+        #
+        pass
 
 
 if __name__ == '__main__':
