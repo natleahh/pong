@@ -5,42 +5,58 @@ from settings import *
 import pygame
 
 
-class Ball(pygame.sprite.Sprite):
+class Mobile(pygame.sprite.Sprite):
+
+    def __init__(self, group, size, p):
+        from pygame.math import Vector2 as Vector
+        super(Mobile, self).__init__(group)
+        self.image = pygame.Surface(size)
+        self.image.fill("white")
+        self.rect = self.image.get_rect(center=p)
+
+        self.p = Vector(self.rect.center)
+        self.v = Vector()
+
+    def move(self, dt):
+        self.p += self.v * dt
+        self.rect.center = self.p
+
+
+class Ball(Mobile):
+    SPEED = 300
+    SIZE = 10
 
     def __init__(self, group):
-        super(Ball, self).__init__(group)
-        self.image = pygame.Surface((BALL_SIZE,) * 2)
-        self.image.fill("white")
-        self.rect = self.image.get_rect()
+        super(Ball, self).__init__(
+            group=group,
+            size=(Ball.SIZE,) * 2,
+            p=(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+        )
 
         # Movement
-        self.p = pygame.math.Vector2(self.rect.center)
         heading = 2 * math.pi / random.randint(1, 18) + 0.5
         self.v = pygame.math.Vector2(
             math.sin(heading),
             math.cos(heading)
-        ) * BALL_SPEED
+        ) * Ball.SPEED
 
     def bounce(self, spin_v=None):
         if spin_v is None:
             self.v = self.v.reflect([0, 1])
             return
         self.v = self.v.reflect([1, 0])
-        self.v = (self.v + spin_v).normalize() * BALL_SPEED
+        self.v = (self.v + spin_v).normalize() * Ball.SPEED
 
-    def update(self):
+    def update(self, dt):
         if 0 >= self.p.y or SCREEN_HEIGHT <= self.p.y:
             self.bounce()
-
-        self.p += self.v
-        self.rect.center = self.p
+        self.move(dt)
 
 
-
-class Paddle(pygame.sprite.Sprite):
-    ACCEL = pygame.math.Vector2(0, 1)
-    DECCEL = pygame.math.Vector2(0, 3)
-    MAX_V = pygame.math.Vector2(0, 5)
+class Paddle(Mobile):
+    ACCEL = pygame.math.Vector2(0, 100)
+    DECCEL = pygame.math.Vector2(0, 300)
+    MAX_V = pygame.math.Vector2(0, 500)
     PLAYER_PARAMS = {
         1: {"up": pygame.K_q, "down": pygame.K_a},
         2: {"up": pygame.K_p, "down": pygame.K_l},
@@ -48,10 +64,11 @@ class Paddle(pygame.sprite.Sprite):
     }
 
     def __init__(self, start_x, player, group):
-        super().__init__(group)
-        self.image = pygame.Surface((PADDLE_WIDTH, PADDLE_HEIGHT))
-        self.image.fill("white")
-        self.rect = self.image.get_rect(center=(start_x, SCREEN_HEIGHT / 2))
+        super(Paddle, self).__init__(
+            group=group,
+            size=(PADDLE_WIDTH, PADDLE_HEIGHT),
+            p=(start_x, SCREEN_HEIGHT / 2)
+        )
 
         # Input Info
         self.params = Paddle.PLAYER_PARAMS[player]
@@ -60,23 +77,16 @@ class Paddle(pygame.sprite.Sprite):
 
         # Movement Info
         self.a = pygame.math.Vector2()
-        self.v = pygame.math.Vector2()
-        self.p = pygame.math.Vector2(self.rect.center)
 
     def input(self):
         keys = pygame.key.get_pressed()
         self.a = (keys[self.params["down"]] - keys[self.params["up"]]) * Paddle.ACCEL
 
-    def move(self):
+    def update(self, dt):
         if self.a:
             self.v += self.a if self.v.magnitude() <= Paddle.MAX_V.magnitude() else pygame.math.Vector2()
         elif abs(self.v.magnitude()) > Paddle.DECCEL.magnitude() / 2:
             self.v -= Paddle.DECCEL * (1 if self.v.y > 0 else -1) if self.v else pygame.math.Vector2()
-
-        self.p += self.v
-        self.rect.center = self.p
-
-    def update(self):
         self.input()
-        self.move()
+        self.move(dt)
 
