@@ -2,7 +2,7 @@ import sys
 
 import pygame
 
-from paddles import Paddle, Ball
+from mobile import Paddle, Ball
 from settings import *
 
 
