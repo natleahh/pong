@@ -57,6 +57,7 @@ class Paddle(Mobile):
     ACCEL = pygame.math.Vector2(0, 100)
     DECCEL = pygame.math.Vector2(0, 300)
     MAX_V = pygame.math.Vector2(0, 500)
+    LOWER_BOUND, UPPER_BOUND = (PADDLE_HEIGHT / 2, SCREEN_HEIGHT - (PADDLE_HEIGHT / 2))
     PLAYER_PARAMS = {
         1: {"up": pygame.K_q, "down": pygame.K_a},
         2: {"up": pygame.K_p, "down": pygame.K_l},
@@ -89,4 +90,9 @@ class Paddle(Mobile):
             self.v -= Paddle.DECCEL * (1 if self.v.y > 0 else -1) if self.v else pygame.math.Vector2()
         self.input()
         self.move(dt)
+        if self.p.y < Paddle.LOWER_BOUND:
+            self.p.y = Paddle.LOWER_BOUND
+        elif self.p.y > Paddle.UPPER_BOUND:
+            self.p.y = Paddle.UPPER_BOUND
+
 
