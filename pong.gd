@@ -1,6 +1,5 @@
 extends Node2D
 
-
 var window_size: Vector2i
 
 func _ready():
@@ -15,11 +14,9 @@ func _ready():
 	$Ball.serve(centre)
 
 
-	
-
 func _process(delta):
 	for pallete in $Players.get_children():
 		pallete.move(0, window_size.y, delta)
-	$Ball.move()
+	$Ball.move(delta)
 	
 	
