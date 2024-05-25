@@ -1,0 +1,27 @@
+[gd_scene load_steps=7 format=3 uid="uid://dy1iyvcgljcjt"]
+
+[ext_resource type="Script" path="res://pong.gd" id="1_hsu0w"]
+[ext_resource type="PackedScene" uid="uid://3n7v7um3s2l4" path="res://players.tscn" id="3_ihmf8"]
+[ext_resource type="Texture2D" uid="uid://mehr50w178pq" path="res://assets/separator.png" id="4_gh21t"]
+[ext_resource type="Script" path="res://Bball.gd" id="4_vpugi"]
+[ext_resource type="Texture2D" uid="uid://due7xflen1lq3" path="res://assets/ball.png" id="5_3hdno"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_e3p7g"]
+radius = 4.0
+
+[node name="pong" type="Node2D"]
+script = ExtResource("1_hsu0w")
+
+[node name="Net" type="Sprite2D" parent="."]
+texture = ExtResource("4_gh21t")
+
+[node name="Players" parent="." instance=ExtResource("3_ihmf8")]
+
+[node name="Ball" type="Area2D" parent="."]
+script = ExtResource("4_vpugi")
+
+[node name="Ball" type="Sprite2D" parent="Ball"]
+texture = ExtResource("5_3hdno")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ball"]
+shape = SubResource("CircleShape2D_e3p7g")

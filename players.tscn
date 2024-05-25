@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://3n7v7um3s2l4"]
+
+[ext_resource type="Script" path="res://players.gd" id="1_nkyuj"]
+[ext_resource type="Texture2D" uid="uid://7rbggh1q0hvf" path="res://assets/left_pallete.png" id="1_stx2m"]
+[ext_resource type="PackedScene" uid="uid://d2lrvfwtde3ac" path="res://pallete.tscn" id="2_aumhg"]
+[ext_resource type="Texture2D" uid="uid://cjo1ym83bt6s" path="res://assets/right_pallete.png" id="2_hqtbd"]
+
+[node name="Players" type="Node2D"]
+script = ExtResource("1_nkyuj")
+metadata/_edit_group_ = true
+
+[node name="LeftPallette" parent="." instance=ExtResource("2_aumhg")]
+texture = ExtResource("1_stx2m")
+
+[node name="RightPallette" parent="." instance=ExtResource("2_aumhg")]
+control_scheme = 1
+texture = ExtResource("2_hqtbd")
