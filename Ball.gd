@@ -13,3 +13,6 @@ func serve(start):
 
 func move(delta):
 	global_position += speed * heading * delta
+
+func bounce(normal):
+	heading = heading.bounce(normal)

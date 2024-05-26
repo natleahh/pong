@@ -21,6 +21,6 @@ func _process(delta):
 	$Ball.move(delta)
 	
 	if 0 > $Ball.position.y or $Ball.position.y > window_size.y:
-		$Ball.heading = $Ball.heading.bounce(Vector2i.UP)
+		$Ball.bounce(Vector2i.UP)
 	if 0 > $Ball.position.x or $Ball.position.x > window_size.x:
 		$Ball.serve(centre)
