@@ -44,3 +44,7 @@ func move(y_min: int, y_max: int, delta):
 	global_position.y = clamp(
 		new_height, y_min + shape_buffer, y_max - shape_buffer
 	)
+
+func _on_area_entered(area):
+	print(area.position)
+	area.bounce(Vector2i.LEFT)
