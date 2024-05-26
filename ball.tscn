@@ -7,7 +7,6 @@
 radius = 4.0
 
 [node name="Ball" type="Area2D"]
-position = Vector2(26, 27)
 script = ExtResource("1_wbwrw")
 metadata/_edit_group_ = true
 
